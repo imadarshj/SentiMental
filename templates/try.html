@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SentiMental</title>
+	<!-- <link rel="stylesheet" type="text/css" href="../static/css/styles.css"> -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/styles.css') }}">
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <form id="paper" method="POST" action="{{ url_for('predict')}}">
+
+            <div id="margin" style="font-size: 30px;">Sentiment</div>
+            <textarea placeholder="Enter something funny." id="text" name="message" rows="4" style="overflow: hidden; word-wrap: break-word; resize: none; height: 160px; "></textarea>  
+            <br>
+            <input id="button" type="submit" value="Create">
+            
+        </form>
+
+    </div>
+
+     <script src="{{ url_for('static', filename='../static/index.js') }}"></script> 
+
+</body>
+</html>

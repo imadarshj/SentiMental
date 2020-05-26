@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SentiMental</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='../static/styles.css') }}">
+</head>
+<body>
+
+	<div id="wrapper">
+		<div style="color: white;font-size: 40px;" id="margin"><h1>Sentiment Report</h1></div>
+
+		<div style="color: white;font-size: 25px;" id="margin"><h1>ML Based Prediction</h1></div>
+
+		{% if prediction['my_prediction'] == 1%}
+		<h1 style="color: #ff3300;font-size: 30px;">It's a Negative Comment</h2>
+		{% elif prediction['my_prediction'] == 0%}
+		<h1 style="color: #00ccff;font-size: 30px;">It's Positive Comment</h2>
+		{% endif %}
+
+		<br><hr>
+		<div style="color: white;font-size: 25px;" id="margin"><h1>AI Based Prediction</h1></div>
+
+		{% if prediction['ai_predict'] == "Negative"%}
+		<h1 style="color: #ff3300;font-size: 30px;">It's a Negative Comment</h2>
+		{% elif prediction['ai_predict'] == 'Positive'%}
+		<h1 style="color: #00ccff;font-size: 30px;">It's Positive Comment</h2>
+		{% endif %}
+
+		</div>
+		<a href="..">
+			<input id="button" type="submit" value="Go Back..">
+		</a>
+	</div>
+</body>
+</html>
