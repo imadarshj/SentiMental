@@ -14,12 +14,28 @@
             <div id="margin" style="font-size: 30px;">Sentiment</div>
             <textarea placeholder="Enter something funny." id="text" name="message" rows="4" style="overflow: hidden; word-wrap: break-word; resize: none; height: 160px; "></textarea>  
             <br>
-            <input id="button" type="submit" value="Create">
-            
+            <input id="button" type="submit" value="Create"><br>
+            <a href=# id=test><input id="button" class='btn btn-default'value="Mic"></a>
         </form>
 
     </div>
+    
+    
 
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+        $(function() {
+            console.log("Hello world!");
+          $('a#test').bind('click', function() {
+            console.log("Hello world!11");
+            $.getJSON('/background_process_test',function(data) {
+                console.log(data.sentence);
+                document.getElementById("text").value = data.sentence;
+            });
+            return true;
+          });
+        });
+    </script>
      <script src="{{ url_for('static', filename='../static/index.js') }}"></script> 
 
 </body>

@@ -8,8 +8,17 @@ import re
 import string
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
+import speech_recognition as spr 
+from googletrans import Translator 
+from gtts import gTTS 
+import os 
 
-print('started')
+# Creating Recogniser() class object 
+recog1 = spr.Recognizer() 
+  
+# Creating microphone instance 
+mc = spr.Microphone() 
+#print('started')
 
 ## Definitions
 def remove_pattern(input_txt,pattern):
@@ -204,10 +213,10 @@ def result(message):
             pcount += 1
     
     for w in s:
-        if(w in positive):
+        if(w in negative):
             ncount += 1
-
-    if(pcount > ncount):
+    print((pcount,ncount))
+    if(pcount >= ncount):
         return "Positive"
     else:
         return "Negative"
@@ -221,6 +230,10 @@ def home():
 def predict():
     if request.method == 'POST':
         message = request.form['message']
+        print("Before Translation: "+message)
+        translator = Translator()
+        message=translator.translate(message).text
+        print("After Translation: "+message)
         data = [message]
         vect = pd.DataFrame(cv.transform(data).toarray())
         body_len = pd.DataFrame([len(data) - data.count(" ")])
@@ -233,6 +246,59 @@ def predict():
         d = {'my_prediction':my_prediction,'ai_predict':ai_predict}
     return render_template('result.html',prediction = d)
 
+@app.route('/background_process_test')
+def background_process_test():
+    get_sentence=""
+    with mc as source: 
+        print("Speak 'hello' to initiate the Translation !") 
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~") 
+        recog1.adjust_for_ambient_noise(source, duration=0.2) 
+        audio = recog1.listen(source) 
+        MyText = recog1.recognize_google(audio)  
+        MyText = MyText.lower() 
+    
+    if 'hello' in MyText: 
+        
+        translator = Translator() 
+        
+        from_lang = 'en'
+        
+        to_lang = 'hi'
+        
+        with mc as source: 
+            
+            print("Speak a stentence...") 
+            recog1.adjust_for_ambient_noise(source, duration=0.2) 
+            
+            audio = recog1.listen(source) 
+
+            get_sentence = recog1.recognize_google(audio) 
+
+            try: 
+
+                print("Phase to be Translated :"+ get_sentence) 
+
+                text_to_translate = translator.translate(get_sentence,  
+                                                        src= from_lang, 
+                                                        dest= to_lang) 
+
+                text = text_to_translate.text  
+    
+                speak = gTTS(text=text, lang=to_lang, slow= False)  
+
+                speak.save("captured_voice.mp3")      
+                
+                os.system("start captured_voice.mp3") 
+    
+ 
+            except spr.UnknownValueError: 
+                print("Unable to Understand the Input") 
+                
+            except spr.RequestError as e: 
+                print("Unable to provide Required Output".format(e)) 
+    d = {'sentence':get_sentence,}
+    return(d)
+    
 
 if __name__ == '__main__':
     app.run()
