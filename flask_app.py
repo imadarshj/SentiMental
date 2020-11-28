@@ -221,6 +221,15 @@ def result(message):
     else:
         return "Negative"
 
+trans_sent = ''
+translator = Translator()
+def get_trans():
+    print("Show :"+trans_sent)
+    return trans_sent
+def set_trans(text):
+    trans_sent=text
+    print("Saved :"+trans_sent)
+
 @app.route('/',methods=['GET'])
 def home():
     print('entering')
@@ -231,8 +240,14 @@ def predict():
     if request.method == 'POST':
         message = request.form['message']
         print("Before Translation: "+message)
-        translator = Translator()
-        message=translator.translate(message).text
+        #translator = Translator()
+        #message=translator.translate(message, src= 'hi', dest= 'en').text
+        #message=get_trans()
+        text_to_translate = translator.translate(message) 
+
+        text = text_to_translate.text
+        print("Phase after Translation :"+ text)
+        message=text
         print("After Translation: "+message)
         data = [message]
         vect = pd.DataFrame(cv.transform(data).toarray())
@@ -246,6 +261,7 @@ def predict():
         d = {'my_prediction':my_prediction,'ai_predict':ai_predict}
     return render_template('result.html',prediction = d)
 
+
 @app.route('/background_process_test')
 def background_process_test():
     get_sentence=""
@@ -258,8 +274,6 @@ def background_process_test():
         MyText = MyText.lower() 
     
     if 'hello' in MyText: 
-        
-        translator = Translator() 
         
         from_lang = 'en'
         
@@ -276,19 +290,13 @@ def background_process_test():
 
             try: 
 
-                print("Phase to be Translated :"+ get_sentence) 
-
-                text_to_translate = translator.translate(get_sentence,  
-                                                        src= from_lang, 
-                                                        dest= to_lang) 
-
-                text = text_to_translate.text  
+                print("Phase to be Translated :"+ get_sentence)
     
-                speak = gTTS(text=text, lang=to_lang, slow= False)  
+               # speak = gTTS(text=text, lang=to_lang, slow= False)  
 
-                speak.save("captured_voice.mp3")      
+                #speak.save("captured_voice.mp3")      
                 
-                os.system("start captured_voice.mp3") 
+                #os.system("start captured_voice.mp3") 
     
  
             except spr.UnknownValueError: 
